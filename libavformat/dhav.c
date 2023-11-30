@@ -313,6 +313,11 @@ static int64_t get_pts(AVFormatContext *s, int stream_index)
     get_timeinfo(dhav->date, &timeinfo);
 
     t = av_timegm(&timeinfo);
+
+    int aux = t*1000LL % (1<<16);
+    dst->pts = t*1000LL+((dhav->timestamp-aux) % 1000);
+
+    /*
     if (dst->last_time == t) {
         int64_t diff = dhav->timestamp - dst->last_timestamp;
 
@@ -323,7 +328,7 @@ static int64_t get_pts(AVFormatContext *s, int stream_index)
         dst->pts += diff;
     } else {
         dst->pts = t * 1000LL;
-    }
+    }*/
 
     dst->last_time = t;
     dst->last_timestamp = dhav->timestamp;
